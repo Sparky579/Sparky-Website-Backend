@@ -19,9 +19,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:fn0309@10.16.36.3
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 Base = declarative_base()
 db.init_app(app)
-@app.before_first_request
-def create_tables():
-    db.create_all()
+appHasRunBefore:bool = False
+@app.before_request
+def firstRun():
+    global appHasRunBefore
+    if not appHasRunBefore:
+        db.create_all()
+        # Run any of your code here
+        # Set the bool to True so this method isn't called again
+        appHasRunBefore = True
 
 CORS(app)
 
