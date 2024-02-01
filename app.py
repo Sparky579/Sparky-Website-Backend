@@ -1,0 +1,34 @@
+from flask import Flask, Blueprint
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, declarative_base
+
+from create_app import createApp
+from extension import db
+
+from auth.auth import auth_bp
+from auth.cookie import cookie_bp
+from auth.mail import mail_bp
+
+
+app = createApp()
+app.register_blueprint(auth_bp)
+app.register_blueprint(cookie_bp)
+app.register_blueprint(mail_bp)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:fn0309@10.16.36.36/sparkyy'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+Base = declarative_base()
+db.init_app(app)
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+CORS(app)
+
+@app.route('/')
+def hello_world():  # put application's code here
+    return 'Hello World!'
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
