@@ -25,7 +25,7 @@ class CookieMail(db.Model):
 
 
 @mail_bp.route('/send_mail', methods=['POST'])
-@limiter.limit("1/minute;20/day")
+# @limiter.limit("1/minute;20/day")
 def send_mail():
     delete_expired_cookiemail()
     data = request.get_json()
